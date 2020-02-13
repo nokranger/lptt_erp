@@ -30,7 +30,14 @@ app.use((err, req, res, next) => {
     })
 })
 
-const server = app.listen(8081, (req, res, next) => {
+app.get('/test', (req, res) => {
+    res.send('<h1>Hello world</h1>')
+    console.log('cc join')
+})
+
+let ports = process.env.PORT || 8081
+
+const server = app.listen(ports, (req, res, next) => {
     const host = server.address().address
     const port = server.address().port
     console.log('Server run port : ' + port)
