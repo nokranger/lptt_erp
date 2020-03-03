@@ -36,6 +36,20 @@ app.get('/test', (req, res) => {
     console.log('cc join')
 })
 
+app.get('/emp', (req, res) => {
+    connection.connect(function(err) {
+        if (err) throw err;
+        connection.query("SELECT * FROM lptt_employee", function (err, result, fields) {
+          if (err) throw err;
+        //   console.log(result);
+            res.json({
+                result: result
+            })
+        });
+      });
+      console.log('done selected')
+})
+
 let ports = process.env.PORT || 8081
 
 const server = app.listen(ports, (req, res, next) => {

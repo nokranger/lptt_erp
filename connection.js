@@ -4,6 +4,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
+    database: "lptt_erp"
 })
 
 // con.connect((err) => {
