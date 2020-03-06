@@ -1,8 +1,14 @@
+//import nodemodules
 const http = require('http')
 const express = require('express')
 const app = express()
+// const route = express.Router()
+const bodyParser = require('body-parser')
 
-const connection = require('./connection')
+// const connection = require('./api/models/connection')
+
+//import route
+const empRoute = require('./api/routes/employee')
 
 app.use((req,res,next) =>{
     // const error = new Error("Not found")
@@ -15,6 +21,9 @@ app.use((req,res,next) =>{
     }
     next()
 })
+
+app.use(bodyParser.urlencoded({extended : false}))
+app.use(bodyParser.json())
 
 app.use((err, req, res, next) => {
     const error = new Error('Not found')
@@ -36,19 +45,11 @@ app.get('/test', (req, res) => {
     console.log('cc join')
 })
 
-app.get('/emp', (req, res) => {
-    connection.connect(function(err) {
-        if (err) throw err;
-        connection.query("SELECT * FROM lptt_employee", function (err, result, fields) {
-          if (err) throw err;
-        //   console.log(result);
-            res.json({
-                result: result
-            })
-        });
-      });
-      console.log('done selected')
-})
+
+//route
+// app.use(app.router);
+// routes.initialize(app);
+app.use('/emp', empRoute)
 
 let ports = process.env.PORT || 8081
 
