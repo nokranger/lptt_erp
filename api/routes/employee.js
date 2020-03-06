@@ -14,9 +14,6 @@ route.get('/get-all-emp', (req, res) => {
       res.json({
         result: result
       })
-        // res.json({
-        //     result: result
-        // })
     });
   });
   console.log('done selected')
