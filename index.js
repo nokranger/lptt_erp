@@ -9,6 +9,9 @@ const bodyParser = require('body-parser')
 
 //import route
 const empRoute = require('./api/routes/employee')
+const jobRoute = require('./api/routes/jobposition')
+const transRoute = require('./api/routes/transportation')
+const DtransRoute = require('./api/routes/detail_transportation')
 
 app.use((req,res,next) =>{
     // const error = new Error("Not found")
@@ -44,12 +47,21 @@ app.get('/test', (req, res) => {
     res.send('<h1>Hello world</h1>')
     console.log('cc join')
 })
+app.get('/www', (req, res) => {
+    res.send('<h1>Hello world</h1>')
+    console.log('cc joinหหหหหห')
+})
+
 
 
 //route
 // app.use(app.router);
 // routes.initialize(app);
 app.use('/emp', empRoute)
+app.use('/job', jobRoute)
+// app.use('/trans', jobRoute)
+// app.use('/Dtrans', jobRoute)
+
 
 let ports = process.env.PORT || 8081
 
