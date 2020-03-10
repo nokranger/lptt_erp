@@ -59,8 +59,8 @@ app.get('/www', (req, res) => {
 // routes.initialize(app);
 app.use('/emp', empRoute)
 app.use('/job', jobRoute)
-// app.use('/trans', jobRoute)
-// app.use('/Dtrans', jobRoute)
+app.use('/trans', transRoute)
+app.use('/dtrans', DtransRoute)
 
 
 let ports = process.env.PORT || 8081

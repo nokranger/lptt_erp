@@ -5,10 +5,10 @@ const connection = require('../models/connection')
 const bodyParser = require('body-parser')
 route.use(bodyParser.json())
 
-route.get('/get-all-trans', (req, res) => {
+route.get('/get-all-la_report', (req, res) => {
     connection.getConnection((err) => {
       if (err) throw err;
-      connection.query("SELECT * FROM transportation", (err, result, fields) => {
+      connection.query("SELECT * FROM leave_activity_report", (err, result, fields) => {
         if (err) throw err;
         // console.log(result);
         res.json({
