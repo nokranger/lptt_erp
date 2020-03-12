@@ -13,7 +13,7 @@ const jobRoute = require('./api/routes/jobposition')
 const transRoute = require('./api/routes/transportation')
 const DtransRoute = require('./api/routes/detail_transportation')
 
-app.use((req,res,next) =>{
+app.use((req, res, next) =>{
     // const error = new Error("Not found")
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Access-Control-Allow-Headers",
@@ -63,7 +63,7 @@ app.use('/trans', transRoute)
 app.use('/dtrans', DtransRoute)
 
 
-let ports = process.env.PORT || 8081
+let ports = process.env.PORT || 4000
 
 const server = app.listen(ports, (req, res, next) => {
     const host = server.address().address
