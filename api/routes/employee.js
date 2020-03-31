@@ -34,7 +34,7 @@ route.get('/get-last-emp', (req, res) => {
   console.log('done selected')
 })
 
-route.post('/post-emp', (req,res) => {
+route.post('/post-emp', (req, res) => {
   connection.getConnection((err) => {
     if (err) throw err;
     console.log("Connected!");
