@@ -62,7 +62,7 @@ app.use('/emp', empRoute)
 app.use('/job', jobRoute)
 app.use('/trans', transRoute)
 app.use('/dtrans', DtransRoute)
-app.use('/leaveAR', leaveAR)
+app.use('/leavear', leaveAR)
 
 
 let ports = process.env.PORT || 4000
