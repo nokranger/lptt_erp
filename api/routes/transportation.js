@@ -18,6 +18,19 @@ route.get('/get-all-trans', (req, res) => {
     });
     console.log('done selected')
   })
+
+route.get('/get-last-trans', (req, res) => {
+  connection.getConnection((err) => {
+    if (err) throw err;
+    connection.query("SELECT * FROM transportation ORDER BY trans_id LIMIT 1", (err, result, fields) => {
+      if (err) throw err;
+      res.json({
+        result: result
+      })
+    })
+  })
+  console.log('done selected')
+})  
 route.post('/post-trans', (req, res) => {
   connection.getConnection((err) => {
     if (err) throw err;
