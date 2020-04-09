@@ -7,7 +7,7 @@ route.use(bodyParser.json())
 
 //getallemp
 route.get('/get-all-emp', (req, res) => {
-  connection.getConnection((err) => {
+  connection.getConnection((err, con) => {
     if (err) throw err;
     connection.query("SELECT * FROM lptt_employee", (err, result, fields) => {
       if (err) throw err;
@@ -15,13 +15,14 @@ route.get('/get-all-emp', (req, res) => {
       res.json({
         result: result
       })
+      con.release()
     });
   });
   console.log('done selected')
 })
 
 route.get('/get-last-emp', (req, res) => {
-  connection.getConnection((err) => {
+  connection.getConnection((err, con) => {
     if (err) throw err;
     connection.query("SELECT * FROM lptt_employee ORDER BY employee_id LIMIT 1", (err, result, fields) => {
       if (err) throw err;
@@ -29,6 +30,7 @@ route.get('/get-last-emp', (req, res) => {
       res.json({
         result: result
       })
+      con.release()
     });
   });
   console.log('done selected')

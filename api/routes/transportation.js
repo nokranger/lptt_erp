@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 route.use(bodyParser.json())
 
 route.get('/get-all-trans', (req, res) => {
-    connection.getConnection((err) => {
+    connection.getConnection((err, con) => {
       if (err) throw err;
       connection.query("SELECT * FROM transportation", (err, result, fields) => {
         if (err) throw err;
@@ -14,19 +14,21 @@ route.get('/get-all-trans', (req, res) => {
         res.json({
           result: result
         })
+        con.release()
       });
     });
     console.log('done selected')
   })
 
 route.get('/get-last-trans', (req, res) => {
-  connection.getConnection((err) => {
+  connection.getConnection((err, con) => {
     if (err) throw err;
     connection.query("SELECT * FROM transportation ORDER BY trans_id LIMIT 1", (err, result, fields) => {
       if (err) throw err;
       res.json({
         result: result
       })
+      con.release()
     })
   })
   console.log('done selected')
