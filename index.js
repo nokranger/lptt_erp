@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 
 //import route
 const empRoute = require('./api/routes/employee')
+const loginRoute = require('./api/routes/login')
 const jobRoute = require('./api/routes/jobposition')
 const transRoute = require('./api/routes/transportation')
 const DtransRoute = require('./api/routes/detail_transportation')
@@ -63,6 +64,7 @@ app.use('/job', jobRoute)
 app.use('/trans', transRoute)
 app.use('/dtrans', DtransRoute)
 app.use('/leavear', leaveAR)
+app.use('/emp', loginRoute)
 
 
 let ports = process.env.PORT || 4000
