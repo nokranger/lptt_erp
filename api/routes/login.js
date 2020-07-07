@@ -14,17 +14,26 @@ route.post('/login', (req, res) => {
     connection.query(sql, value, (err, result, fields) => {
       if (err) throw err;
       // console.log(result);
-      for (i = 0; i < result.length; i++) {
-      if (result == null || result == [] || result == undefined || result == 'undefined' || result == '') {
-          console.log('error')
-      } else if (result[i].employee_id == req.body.employee_id && result[i].password == req.body.password) {
-        console.log('success')
+      if (result.length > 0) {
+          res.json({
+              result: 'success'
+          })
+      } else {
+          res.json({
+              result: 'unsuccess'
+          })
       }
-      console.log(result[0].employee_id)
-      res.json({
-        result: result
-      })
-    }
+    //   for (i = 0; i < result.length; i++) {
+    //   if (result == null || result == [] || result == undefined || result == 'undefined' || result == '') {
+    //       console.log('error')
+    //   } else if (result[i].employee_id == req.body.employee_id && result[i].password == req.body.password) {
+    //     console.log('success')
+    //   }
+    //   console.log(result[0].employee_id)
+    //   res.json({
+    //     result: result
+    //   })
+    // }
       con.release()
     });
   });
