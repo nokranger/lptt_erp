@@ -3,9 +3,34 @@ const route = express.Router()
 // const app = express()
 const connection = require('../models/connection')
 const bodyParser = require('body-parser')
+const jwt = require('jwt-simple')
+const ExtractJwt = require('passport-jwt').ExtractJwt
+const JwtStrategy = require('passport-jwt').Strategy
+const passport = require('passport')
 route.use(bodyParser.json())
 
+const SECRET = 'MY_SECRET_KEY'
+
+const jwtOption = {
+  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  secretOrKey: SECRET
+}
+
+
+const JwtAuth = new JwtStrategy(jwtOption, (payload, done) => {
+  if(payload.sub == req.body.employee_id) done(null, true)
+  else done(null, false)
+})
+passport.use(JwtAuth)
+
+const requireJWTAuth = passport.authenticate('jwt', {session: false})
+
+
+
 //getallemp
+// route.get('/aa', requireJWTAuth, (req,res) => {
+//   res.send('aa')
+// })
 route.post('/login', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err;
@@ -15,13 +40,23 @@ route.post('/login', (req, res) => {
       if (err) throw err;
       // console.log(result);
       if (result.length > 0) {
-          res.json({
-              result: 'success'
-          })
+        const payload = {
+          sub: req.body.employee_id,
+          iat: new Date().getTime(), // issue at time,
+          role: 1,
+          loginSuccessfull: true
+        }
+        console.log('success')
+          res.json(jwt.encode(payload, SECRET))
       } else {
-          res.json({
-              result: 'unsuccess'
-          })
+        console.log('unsuccess')
+        const payload = {
+          sub: '',
+          iat: '', // issue at time,
+          role: '',
+          loginSuccessfull: false
+        }
+          res.json(jwt.encode(payload, SECRET))
       }
     //   for (i = 0; i < result.length; i++) {
     //   if (result == null || result == [] || result == undefined || result == 'undefined' || result == '') {
