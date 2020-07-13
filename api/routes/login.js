@@ -34,17 +34,18 @@ const requireJWTAuth = passport.authenticate('jwt', {session: false})
 route.post('/login', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err;
-    var sql = 'SELECT employee_id,password FROM `lptt_employee` WHERE employee_id = ? AND password = ?'
+    var sql = 'SELECT job_position.permission, lptt_employee.employee_id, lptt_employee.password FROM job_position INNER JOIN lptt_employee ON job_position.job_id = lptt_employee.job_position_id WHERE lptt_employee.employee_id = ? AND lptt_employee.password= ?'
     var value = [req.body.employee_id, req.body.password]
     connection.query(sql, value, (err, result, fields) => {
       if (err) throw err;
       // console.log(result);
       if (result.length > 0) {
+        console.log(result[0].permission)
         const payload = {
-          sub: req.body.employee_id,
+          sub: result[0].employee_id,
           iat: new Date().getTime(), // issue at time,
-          role: 1,
-          loginSuccessfull: true
+          role: result[0].permission,
+          loginSuccessfull: true,
         }
         console.log('success')
           res.json(jwt.encode(payload, SECRET))
