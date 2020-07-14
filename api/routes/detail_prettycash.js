@@ -21,12 +21,14 @@ route.get('/get-all-emp', (req, res) => {
   console.log('done selected')
 })
 
-route.get('/get-last-emp', (req, res) => {
+route.post('/get-month-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err;
-    connection.query("SELECT * FROM lptt_employee ORDER BY employee_id LIMIT 1", (err, result, fields) => {
+    var sql = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ? '
+    var value = [req.body.from, req.body.to]
+    connection.query(sql, value, (err, result, fields) => {
       if (err) throw err;
-      // console.log(result);
+      console.log(result);
       res.json({
         result: result
       })
