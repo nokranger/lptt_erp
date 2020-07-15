@@ -3,7 +3,7 @@ const route = express.Router()
 // const app = express()
 const connection = require('../models/connection')
 const bodyParser = require('body-parser')
-const jwt = require('jwt-simple')
+const jwt = require('jsonwebtoken')
 const ExtractJwt = require('passport-jwt').ExtractJwt
 const JwtStrategy = require('passport-jwt').Strategy
 const passport = require('passport')
@@ -41,6 +41,16 @@ route.post('/login', (req, res) => {
       // console.log(result);
       if (result.length > 0) {
         console.log(result[0].permission)
+        const token = jwt.sign(
+          {
+          sub: result[0].employee_id,
+          iat: new Date().getTime(), // issue at time,
+          role: result[0].permission,
+          loginSuccessfull: true,
+          },process.env.JWT_KEY,
+          {
+            expiresIn: '10m'
+          })
         const payload = {
           sub: result[0].employee_id,
           iat: new Date().getTime(), // issue at time,
@@ -48,7 +58,8 @@ route.post('/login', (req, res) => {
           loginSuccessfull: true,
         }
         console.log('success')
-          res.json(jwt.encode(payload, SECRET))
+          // res.status(200).json(jwt.encode(payload, SECRET))
+          res.status(200).json(token)
       } else {
         console.log('unsuccess')
         const payload = {
@@ -57,7 +68,10 @@ route.post('/login', (req, res) => {
           role: '',
           loginSuccessfull: false
         }
-          res.json(jwt.encode(payload, SECRET))
+          // res.json(jwt.encode(payload, SECRET))
+          res.status(404).json({
+            message: 'NOT FOUND'
+          })
       }
     //   for (i = 0; i < result.length; i++) {
     //   if (result == null || result == [] || result == undefined || result == 'undefined' || result == '') {

@@ -28,10 +28,16 @@ route.post('/get-month-prettycash', (req, res) => {
     var value = [req.body.from, req.body.to]
     connection.query(sql, value, (err, result, fields) => {
       if (err) throw err;
-      console.log(result);
-      res.json({
-        result: result
-      })
+      if (result.length > 0) {
+        console.log(result);
+        res.status(200).json({
+          result: result
+        })
+      } else {
+        res.status(404).json({
+          message: 'NOT FOUND'
+        })
+      }
       con.release()
     });
   });
