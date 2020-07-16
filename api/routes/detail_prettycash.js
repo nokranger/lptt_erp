@@ -6,19 +6,23 @@ const bodyParser = require('body-parser')
 route.use(bodyParser.json())
 
 //getallemp
-route.get('/get-all-emp', (req, res) => {
+route.patch('/approve-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err;
-    connection.query("SELECT * FROM lptt_employee", (err, result, fields) => {
-      if (err) throw err;
+    var sql = 'UPDATE detail_prettycash SET status = ? WHERE id = ?'
+    var value = [req.body.status, req.body.id]
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }
       // console.log(result);
-      res.json({
-        result: result
-      })
+      console.log('done update')
       con.release()
     });
   });
-  console.log('done selected')
+  // console.log('done selected')
 })
 
 route.post('/get-month-prettycash', (req, res) => {
@@ -48,8 +52,8 @@ route.post('/post-prettycash', (req, res) => {
   connection.getConnection((err) => {
     if (err) throw err;
     console.log("Connected!");
-    var sql = "INSERT INTO detail_prettycash (id, date, amount, service_charge, detail, picture, employee_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    let values = ['', req.body.date, req.body.amount, req.body.service_charge, req.body.detail, req.body.picture, req.body.employee_id]
+    var sql = "INSERT INTO detail_prettycash (id, date, amount, service_charge, detail, picture, employee_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    let values = ['', req.body.date, req.body.amount, req.body.service_charge, req.body.detail, req.body.picture, req.body.employee_id, req.body.status]
     connection.query(sql, values, (err, result) => {
       if (err) throw err;
       console.log("1 record inserted");
