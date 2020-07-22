@@ -19,6 +19,34 @@ route.get('/get-all-la_report', (req, res) => {
     });
     console.log('done selected')
   })
+  route.patch('/approve-leave-report', (req, res) => {
+    connection.getConnection((err, con) => {
+      if (err) throw err;
+      var sql = 'UPDATE leave_activity_report SET status = ? WHERE leave_activity_report_id = ?'
+      var sql2 = 'SELECT * FROM leave_activity_report'
+      var value = [req.body.status, req.body.id]
+      connection.query(sql, value, (err, result, fields) => {
+        connection.query(sql2, (err, result, fields) => {
+          console.log('query2')
+          console.log(result)
+          if (err) {
+            res.status(404).json({
+              err: err
+            })
+          }
+          if (result.length > 0) {
+            res.status(200).json({
+              result: result
+            })
+          } else {
+            res.status(404).json({
+              message: 'NOT FOUND'
+            })
+          }
+        })
+      })
+    })
+  })
   route.post('/post-la_report', (req, res) => {
     connection.getConnection((err) => {
       if (err) throw err;

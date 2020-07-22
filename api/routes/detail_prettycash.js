@@ -10,15 +10,35 @@ route.patch('/approve-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err;
     var sql = 'UPDATE detail_prettycash SET status = ? WHERE id = ?'
+    var sql2 = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ?'
     var value = [req.body.status, req.body.id]
+    var value2 = [req.body.from, req.body.to]
     connection.query(sql, value, (err, result, fields) => {
+      connection.query(sql2, value2, (err, result, fields) => {
+        console.log('query2')
+        console.log(result)
+        if (err) {
+          res.status(404).json({
+            err: err
+          })
+        }
+        if (result.length > 0) {
+          res.status(200).json({
+            result: result
+          })
+        } else {
+          res.status(404).json({
+            message: 'NOT FOUND'
+          })
+        }
+      })
       if (err) {
         res.status(404).json({
           err: err
         })
       }
-      // console.log(result);
-      console.log('done update')
+      // console.log('bbbbbbb', typeof(result));
+      console.log('done update1')
       con.release()
     });
   });

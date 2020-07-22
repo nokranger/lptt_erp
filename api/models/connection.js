@@ -4,7 +4,8 @@ const connection = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: "lptt_erp"
+    database: "lptt_erp",
+    multipleStatements: true
 })
 
 // con.connect((err) => {
