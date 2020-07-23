@@ -37,11 +37,47 @@ route.post('/post-trans', (req, res) => {
   connection.getConnection((err) => {
     if (err) throw err;
     console.log('connected')
-    var sql = "INSERT INTO transportation (trans_id, employee_id, trans_date, trans_from, trans_to, trans_vehicle, trans_values, approve_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    let values = [req.body.trans_id, 'LPTT009', req.body.trans_date, req.body.trans_from, req.body.trans_to, req.body.trans_vehicle, req.body.trans_values, 'LPTT009', 0]
+    var sql = "INSERT INTO transportation (trans_id, date, employee_id, trans_from, trans_to, trans_vehicle, trans_values, approve_id, trans_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    let values = ['', req.body.trans_date, req.body.employee_id, req.body.trans_from, req.body.trans_to, req.body.trans_vehicle, req.body.trans_values, req.body.approve_id, req.body.status]
     connection.query(sql, values, (err, result) => {
       if (err) throw err;
       console.log('1 record inserted')
+      console.log(result)
+    })
+  })
+})
+route.patch('/approve-transportation', (req, res) => {
+  connection.getConnection((err, con) => {
+    // console.log(req.body.trans_status, req.body.approve_id, req.body.trans_id)
+    if (err) throw err;
+    var sql = 'UPDATE transportation SET trans_status = ?, approve_id = ? WHERE trans_id = ?'
+    var sql2 = 'SELECT * FROM transportation'
+    var value = [req.body.trans_status, req.body.approve_id, req.body.trans_id]
+    connection.query(sql, value, (err, result, fields) => {
+      connection.query(sql2, (err, result, fields) => {
+        console.log(result)
+        if (err) {
+          res.status(404).json({
+            err: err
+          })
+        }
+        if (result.length > 0) {
+          res.status(200).json({
+            result: result
+          })
+        } else {
+          res.status(404).json({
+            message: 'NOT FOUND'
+          })
+        }
+      })
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }
+      console.log('update trans done')
+      con.release()
     })
   })
 })

@@ -38,7 +38,7 @@ route.patch('/approve-prettycash', (req, res) => {
         })
       }
       // console.log('bbbbbbb', typeof(result));
-      console.log('done update1')
+      console.log('update cash done')
       con.release()
     });
   });
