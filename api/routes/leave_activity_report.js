@@ -1,10 +1,25 @@
 const express = require('express')
 const route = express.Router()
-// const app = express()
 const connection = require('../models/connection')
 const bodyParser = require('body-parser')
+var multer  = require('multer')
 const { response } = require('express')
 route.use(bodyParser.json())
+
+const storage = multer.diskStorage({
+  destination: './public/uploads/leave/',
+  filename: function(req, file, cb) {
+    let ext = file.originalname.substring(
+      file.originalname.lastIndexOf("."),
+      file.originalname.length
+    );
+    cb(null, 'LPTTLEAVE' + "-" + Date.now() + ext);
+  }
+})
+
+const upload = multer({
+  storage: storage
+})
 
 route.get('/get-all-la_report', (req, res) => {
     connection.getConnection((err, con) => {
@@ -81,5 +96,11 @@ route.get('/get-all-la_report', (req, res) => {
         con.release()
       })
     })
+  })
+  route.post('/upload', upload.single('file'), (req, res) => {
+    let data = JSON.parse(req.body.data)
+    // console.log(JSON.parse(req.body.data.cc))
+    console.log(data.cc)
+    res.json({ cool: req.file.path})   
   })
 module.exports = route

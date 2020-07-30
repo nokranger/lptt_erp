@@ -1,9 +1,25 @@
 const express = require('express')
 const route = express.Router()
-// const app = express()
+var multer  = require('multer')
 const connection = require('../models/connection')
 const bodyParser = require('body-parser')
 route.use(bodyParser.json())
+
+
+const storage = multer.diskStorage({
+  destination: './public/uploads/prettycash/',
+  filename: function(req, file, cb) {
+    let ext = file.originalname.substring(
+      file.originalname.lastIndexOf("."),
+      file.originalname.length
+    );
+    cb(null, 'LPTTPRETTYCASH' + "-" + Date.now() + ext);
+  }
+})
+
+const upload = multer({
+  storage: storage
+})
 
 //getallemp
 route.patch('/approve-prettycash', (req, res) => {
@@ -68,12 +84,14 @@ route.post('/get-month-prettycash', (req, res) => {
   console.log('done selected')
 })
 
-route.post('/post-prettycash', (req, res) => {
+route.post('/post-prettycash', upload.single('file'), (req, res) => {
   connection.getConnection((err) => {
     if (err) throw err;
     console.log("Connected!");
+    let data = JSON.parse(req.body.data)
+    // console.log(req.body.data)
     var sql = "INSERT INTO detail_prettycash (id, date, amount, service_charge, detail, picture, employee_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    let values = ['', req.body.date, req.body.amount, req.body.service_charge, req.body.detail, req.body.picture, req.body.employee_id, req.body.status]
+    let values = ['', data.date, data.amount, data.service_charge, data.detail,  req.file.path, data.employee_id, data.status]
     connection.query(sql, values, (err, result) => {
       if (err) throw err;
       console.log("1 record inserted");

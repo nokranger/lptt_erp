@@ -59,31 +59,13 @@ route.post('/login', (req, res) => {
         }
         console.log('success')
           // res.status(200).json(jwt.encode(payload, SECRET))
-          res.status(200).json(token)
+        res.status(200).json(token)
       } else {
         console.log('unsuccess')
-        const payload = {
-          sub: '',
-          iat: '', // issue at time,
-          role: '',
-          loginSuccessfull: false
-        }
-          // res.json(jwt.encode(payload, SECRET))
-          res.status(404).json({
-            message: 'NOT FOUND'
-          })
+        res.status(404).json({
+          message: 'NOT FOUND'
+        })
       }
-    //   for (i = 0; i < result.length; i++) {
-    //   if (result == null || result == [] || result == undefined || result == 'undefined' || result == '') {
-    //       console.log('error')
-    //   } else if (result[i].employee_id == req.body.employee_id && result[i].password == req.body.password) {
-    //     console.log('success')
-    //   }
-    //   console.log(result[0].employee_id)
-    //   res.json({
-    //     result: result
-    //   })
-    // }
       con.release()
     });
   });
