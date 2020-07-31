@@ -7,7 +7,7 @@ route.use(bodyParser.json())
 
 
 const storage = multer.diskStorage({
-  destination: './public/uploads/prettycash/',
+  destination: '../../../../../VueJS/LPTT/frontend_erp/src/img/uploads/prettycash/',
   filename: function(req, file, cb) {
     let ext = file.originalname.substring(
       file.originalname.lastIndexOf("."),
@@ -91,10 +91,13 @@ route.post('/post-prettycash', upload.single('file'), (req, res) => {
     let data = JSON.parse(req.body.data)
     // console.log(req.body.data)
     var sql = "INSERT INTO detail_prettycash (id, date, amount, service_charge, detail, picture, employee_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    let values = ['', data.date, data.amount, data.service_charge, data.detail,  req.file.path, data.employee_id, data.status]
+    let values = ['', data.date, data.amount, data.service_charge, data.detail,  req.file.filename, data.employee_id, data.status]
     connection.query(sql, values, (err, result) => {
       if (err) throw err;
       console.log("1 record inserted");
+      res.status(200).json({
+        result: req.file.filename
+      })
     });
   });
 }) 
