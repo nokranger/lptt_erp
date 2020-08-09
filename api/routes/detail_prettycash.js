@@ -25,10 +25,10 @@ const upload = multer({
 route.patch('/approve-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err;
-    var sql = 'UPDATE detail_prettycash SET status = ? WHERE id = ?'
+    var sql = 'UPDATE detail_prettycash SET status = ?, approve_id = ? WHERE id = ?'
     var sql2 = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ?'
-    var value = [req.body.status, req.body.id]
-    var value2 = [req.body.from, req.body.to]
+    var value = [req.body.status, req.body.approve_id, req.body.id]
+    var value2 =  [req.body.from, req.body.to]
     connection.query(sql, value, (err, result, fields) => {
       connection.query(sql2, value2, (err, result, fields) => {
         console.log('query2')
@@ -42,23 +42,37 @@ route.patch('/approve-prettycash', (req, res) => {
           res.status(200).json({
             result: result
           })
-        } else {
-          res.status(404).json({
-            message: 'NOT FOUND'
-          })
         }
       })
-      if (err) {
-        res.status(404).json({
-          err: err
-        })
-      }
       // console.log('bbbbbbb', typeof(result));
       console.log('update cash done')
       con.release()
     });
   });
   // console.log('done selected')
+})
+route.post('/pdf', (req, res) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'SELECT @_No := @_No + 1 _No, date, detail, amount, @_amount := @_amount + amount _amounts FROM `detail_prettycash`, (SELECT @_No := 0) _No, (SELECT @_amount := 0) _amounts WHERE status = 1 and date BETWEEN ? and ?'
+    var value = [req.body.from, req.body.to]
+    console.log(req.body.from)
+    console.log(req.body.to)
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }else if (result.length > 0) {
+        console.log('test',result)
+        res.status(200).json({
+          result: result
+        })
+      }
+    })
+    console.log('select data for pdf')
+    con.release()
+  })
 })
 
 route.post('/get-month-prettycash', (req, res) => {
