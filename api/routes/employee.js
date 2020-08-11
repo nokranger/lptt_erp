@@ -49,8 +49,10 @@ route.post('/post-emp', (req, res) => {
   });
 })
 
-route.post('/settingprofile', ((req, res) => {
-  connection.getConnection((err) => {
+route.post('/settingprofile', (req, res) => {
+  console.log('connect from cc', req.body.employee_id)
+  connection.getConnection((err, con) => {
+    console.log(req.body.employee_id)
     if (err) throw err;
     var sql = 'SELECT lptt_employee.employee_id, lptt_employee.employee_name, lptt_employee.employee_lastname, lptt_employee.employee_email, lptt_employee.employee_tel, lptt_employee.start_date, lptt_employee.leave_sick, lptt_employee.leave_activity, lptt_employee.leave_vacation, lptt_employee.employee_pic, job_position.job_name FROM lptt_employee INNER JOIN job_position ON job_position.job_id = lptt_employee.job_position_id WHERE lptt_employee.employee_id = ?'
     var values = [req.body.employee_id]
@@ -69,6 +71,6 @@ route.post('/settingprofile', ((req, res) => {
     console.log('select data for setting profile')
     con.release()
   })
-}))
+})
 
 module.exports = route
