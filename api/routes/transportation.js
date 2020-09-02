@@ -23,11 +23,21 @@ route.get('/get-all-trans', (req, res) => {
 route.get('/get-last-trans', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err;
-    connection.query("SELECT * FROM transportation ORDER BY trans_id LIMIT 1", (err, result, fields) => {
-      if (err) throw err;
-      res.json({
-        result: result
-      })
+    connection.query("SELECT lptt_employee.employee_name, trans_from, trans_to, trans_vehicle, trans_status FROM transportation INNER JOIN lptt_employee ORDER BY trans_id DESC LIMIT 1", (err, result, fields) => {
+      if (err) {
+        res.status(400).json({
+          err: err
+        })
+      }
+      if (result) {
+        res.status(200).json({
+          result: result
+        })
+      }  else {
+        res.status(404).json({
+          message: 'NOT FOUND'
+        })
+      }
       con.release()
     })
   })

@@ -35,6 +35,29 @@ route.get('/get-all-la_report', (req, res) => {
     });
     console.log('done selected')
   })
+
+  route.get('/get-last-record', (req, res) => {
+    connection.getConnection((err, con) => {
+      if (err) throw err;
+      connection.query('SELECT lptt_employee.employee_name, reason_for_leave, leave_category, status FROM leave_activity_report INNER JOIN lptt_employee ORDER BY leave_activity_report_id DESC LIMIT 1', (err, result, fields) => {
+        if (err) {
+          res.status(404).json({
+            err: err
+          })
+        }
+        if (result.length > 0) {
+          res.status(200).json({
+            result: result
+          })
+        } else {
+          res.status(404).json({
+            message: 'NOT FOUND'
+          })
+        }
+        con.release()
+      })
+    })
+  })
   route.patch('/approve-leave-report', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err;
