@@ -75,21 +75,33 @@ route.patch('/approve-transportation', (req, res) => {
           res.status(200).json({
             result: result
           })
-        } else {
-          res.status(404).json({
-            message: 'NOT FOUND'
-          })
         }
+        console.log('update trans done')
+        con.release()
       })
-      if (err) {
-        res.status(404).json({
-          err: err
-        })
-      }
-      console.log('update trans done')
-      con.release()
     })
   })
 })
+
+route.get('/getstation', (req, res) => {
+  // console.log('test', req.body.test)
+  connection.getConnection((err, con) => {
+    // console.log('test', req.body.test)
+    if (err) throw err;
+    var sql = "SELECT trans_to = 'benz' FROM transportation"
+    // var value = [req.boy.test]
+    connection.query(sql, (err, result, fields) => {
+      console.log('res', result)
+      if (err) throw err;
+      if (result.length > 0) {
+        res.status(200).json({
+          result: result
+        })
+      }
+      con.release()
+    })
+  })
+  console.log('done selected')
+})  
 
 module.exports = route
