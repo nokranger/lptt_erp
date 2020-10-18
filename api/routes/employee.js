@@ -161,7 +161,6 @@ route.patch('/changepassword', (req, res) => {
 
 route.patch('/updateuserss', (req, res) => {
   console.log('test update users')
-  console.log([req.body.password, req.body.id])
   console.log([req.body.name, req.body.lastname, req.body.tel, req.body.email, req.body.id])
     connection.getConnection((err, con) => {
       if (err) throw err;
