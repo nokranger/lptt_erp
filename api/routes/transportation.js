@@ -88,7 +88,7 @@ route.get('/getstation', (req, res) => {
   connection.getConnection((err, con) => {
     // console.log('test', req.body.test)
     if (err) throw err;
-    var sql = "SELECT trans_to = 'benz' _trans_to_benz FROM transportation"
+    var sql = "SELECT trans_to = 'benz' _trans_to_benz, trans_to = 'lptt' _trans_to_lptt, trans_to = 'toyota' _trans_to_toyota FROM transportation"
     // var value = [req.boy.test]
     connection.query(sql, (err, result, fields) => {
       console.log('res', result)

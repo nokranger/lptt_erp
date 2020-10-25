@@ -125,7 +125,7 @@ route.patch('/adminchangepassword', (req, res) => {
           }
         })
       })
-      console.log('select data for setting profile')
+      console.log('adminchangepassword')
       con.release()
     })
   }
@@ -154,12 +154,12 @@ route.patch('/changepassword', (req, res) => {
           }
         })
       })
-      console.log('select data for setting profile')
+      console.log('changepassword')
       con.release()
     })
 })
 
-route.patch('/updateuserss', (req, res) => {
+route.patch('/updateusers', (req, res) => {
   console.log('test update users')
   console.log([req.body.name, req.body.lastname, req.body.tel, req.body.email, req.body.id])
     connection.getConnection((err, con) => {
@@ -182,9 +182,36 @@ route.patch('/updateuserss', (req, res) => {
           }
         })
       })
-      console.log('select data for setting profile')
+      console.log('updateusers')
       con.release()
     })
 })
 
+route.patch('/updateusersadmin', (req, res) => {
+  console.log('test update users')
+  console.log([req.body.name, req.body.lastname, req.body.tel, req.body.email, req.body.id])
+    connection.getConnection((err, con) => {
+      if (err) throw err;
+      var sql = 'UPDATE lptt_employee SET employee_name = ?, employee_lastname = ?, employee_tel = ?, employee_email = ? WHERE employee_id = ?'
+      var sql2 = 'SELECT lptt_employee.employee_id, lptt_employee.employee_name, lptt_employee.employee_lastname, lptt_employee.employee_email, lptt_employee.employee_tel, lptt_employee.start_date, lptt_employee.leave_sick, lptt_employee.leave_activity, lptt_employee.leave_vacation, lptt_employee.employee_pic, job_position.job_name FROM lptt_employee INNER JOIN job_position ON job_position.job_id = lptt_employee.job_position_id WHERE lptt_employee.employee_id = ?'
+      var values = [req.body.name, req.body.lastname, req.body.tel, req.body.email, req.body.id]
+      var value2 = [req.body.id]
+      connection.query(sql, values, (err, result, fields) => {
+        connection.query(sql2, value2, (err, result, fields) => {
+          if (err) throw err;
+          if (result.length > 0) {
+            res.status(200).json({
+              result: result
+            })
+          } else {
+            res.status(404).json({
+              err: err
+            })
+          }
+        })
+      })
+      console.log('updateusersadmin')
+      con.release()
+    })
+})
 module.exports = route

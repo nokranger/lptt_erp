@@ -59,11 +59,12 @@ route.get('/get-all-la_report', (req, res) => {
     })
   })
   route.patch('/approve-leave-report', (req, res) => {
+    console.log('llll', [req.body.status, req.body.id, req.body.approve_id])
     connection.getConnection((err, con) => {
       if (err) throw err;
-      var sql = 'UPDATE leave_activity_report SET status = ? WHERE leave_activity_report_id = ?'
+      var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
       var sql2 = 'SELECT * FROM leave_activity_report'
-      var value = [req.body.status, req.body.id]
+      var value = [req.body.status, req.body.approve_id, req.body.id]
       connection.query(sql, value, (err, result, fields) => {
         connection.query(sql2, (err, result, fields) => {
           console.log('query2')
