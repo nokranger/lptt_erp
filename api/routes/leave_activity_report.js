@@ -34,8 +34,26 @@ route.get('/get-all-la_report', (req, res) => {
       });
     });
     console.log('done selected')
-  })
+})
+route.post('/get-all-la_report-user', (req, res) => {
+  console.log('emid', [req.body.id])
+  connection.getConnection((err, con) => {
+    if (err) throw err;
+    var sql = 'SELECT * FROM leave_activity_report WHERE employee_id = ?'
+    var value = [req.body.id]
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) throw err;
+      // console.log(result);
+      res.json({
+        result: result,
+      })
+      con.release()
+    });
+  });
+  console.log('done selected')
+})
 
+ 
   route.get('/get-last-record', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err;
