@@ -1,9 +1,25 @@
 const express = require('express')
 const route = express.Router()
+var multer  = require('multer')
 // const app = express()
 const connection = require('../models/connection')
 const bodyParser = require('body-parser')
 route.use(bodyParser.json())
+
+const storage = multer.diskStorage({
+  destination: '../../../../../VueJS/LPTT/frontend_erp/src/img/uploads/signup/',
+  filename: function(req, file, cb) {
+    let ext = file.originalname.substring(
+      file.originalname.lastIndexOf("."),
+      file.originalname.length
+    );
+    cb(null, 'LPTTSIGNUP' + "-" + Date.now() + '.png');
+  }
+})
+
+const upload = multer({
+  storage: storage
+})
 
 //getallemp
 route.get('/get-all-emp', (req, res) => {
@@ -36,14 +52,18 @@ route.get('/get-last-emp', (req, res) => {
   console.log('done selected')
 })
 
-route.post('/post-emp', (req, res) => {
+route.post('/post-emp', upload.single('file'), (req, res) => {
   connection.getConnection((err) => {
     if (err) throw err;
     console.log("Connected!");
+    let data = JSON.parse(req.body.data)
     var sql = "INSERT INTO lptt_employee (employee_id, employee_name, employee_lastname, job_position_id, employee_email, employee_tel, password, start_date, leave_sick, leave_activity, leave_vacation, employee_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    let values = [req.body.employee_id, req.body.employee_name, req.body.employee_lastname, req.body.job_position_id, req.body.employee_email, req.body.employee_tel, req.body.password, req.body.start_date, req.body.leave_sick, req.body.leave_activity, req.body.leave_vacation, req.body.employee_pic]
+    let values = [data.employee_id, data.employee_name, data.employee_lastname, data.job_position_id, data.employee_email, data.employee_tel, data.password, data.start_date, data.leave_sick, data.leave_activity, data.leave_vacation, req.file.filename]
     connection.query(sql, values, (err, result) => {
       if (err) throw err;
+      res.status(200).json({
+        result: req.file.filename
+      })
       console.log("1 record inserted");
     });
   });
