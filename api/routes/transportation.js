@@ -23,7 +23,7 @@ route.get('/get-all-trans', (req, res) => {
 route.get('/get-last-trans', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err;
-    connection.query("SELECT lptt_employee.employee_name, trans_from, trans_to, trans_vehicle, trans_status FROM transportation INNER JOIN lptt_employee ORDER BY trans_id DESC LIMIT 1", (err, result, fields) => {
+    connection.query("SELECT lptt_employee.employee_name, trans_from, trans_to, trans_vehicle, trans_status FROM transportation INNER JOIN lptt_employee on lptt_employee.employee_id = transportation.employee_id ORDER BY transportation.trans_id DESC LIMIT 1", (err, result, fields) => {
       if (err) {
         res.status(400).json({
           err: err
@@ -44,6 +44,7 @@ route.get('/get-last-trans', (req, res) => {
   console.log('done selected')
 })  
 route.post('/post-trans', (req, res) => {
+  console.log('trans', ['', req.body.trans_date, req.body.employee_id, req.body.trans_from, req.body.trans_to, req.body.trans_vehicle, req.body.trans_values, req.body.approve_id, req.body.status])
   connection.getConnection((err) => {
     if (err) throw err;
     console.log('connected')
