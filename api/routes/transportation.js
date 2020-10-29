@@ -51,11 +51,12 @@ route.post('/post-trans', (req, res) => {
     let values = ['', req.body.trans_date, req.body.employee_id, req.body.trans_from, req.body.trans_to, req.body.trans_vehicle, req.body.trans_values, req.body.approve_id, req.body.status]
     connection.query(sql, values, (err, result) => {
       if (err) throw err;
-      console.log('1 record inserted')
+      console.log('post trans')
       console.log(result)
     })
   })
 })
+
 route.patch('/approve-transportation', (req, res) => {
   connection.getConnection((err, con) => {
     // console.log(req.body.trans_status, req.body.approve_id, req.body.trans_id)
@@ -76,7 +77,34 @@ route.patch('/approve-transportation', (req, res) => {
             result: result
           })
         }
-        console.log('update trans done')
+        console.log('approve trans done')
+        con.release()
+      })
+    })
+  })
+})
+
+route.patch('/reject-transportation', (req, res) => {
+  connection.getConnection((err, con) => {
+    // console.log(req.body.trans_status, req.body.approve_id, req.body.trans_id)
+    if (err) throw err;
+    var sql = 'UPDATE transportation SET trans_status = ?, approve_id = ? WHERE trans_id = ?'
+    var sql2 = 'SELECT * FROM transportation'
+    var value = [req.body.trans_status, req.body.approve_id, req.body.trans_id]
+    connection.query(sql, value, (err, result, fields) => {
+      connection.query(sql2, (err, result, fields) => {
+        console.log(result)
+        if (err) {
+          res.status(404).json({
+            err: err
+          })
+        }
+        if (result.length > 0) {
+          res.status(200).json({
+            result: result
+          })
+        }
+        console.log('reject trans done')
         con.release()
       })
     })
