@@ -184,4 +184,33 @@ route.post('/get-all-la_report-user', (req, res) => {
     console.log(data.cc)
     res.json({ cool: req.file.path})   
   })
+
+route.post('/checkleave', (req, res) => {
+  console.log('id:', req.body.id)
+  console.log('test leave')
+  connection.getConnection((err, con) => {
+    if (err) throw err;
+    var sql = 'SELECT leave_activity FROM lptt_employee WHERE employee_id = ?'
+    let values = [req.body.id]
+    connection.query(sql, values, (err, result) => {
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }
+      if (result.length > 0) {
+        res.status(200).json({
+          result: result
+        })
+      } else {
+        res.status(404).json({
+          message: 'NOT FOUND'
+        })
+      }
+      console.log('res', result)
+      console.log('check leave done')
+      con.release()
+    })
+  })
+})
 module.exports = route
