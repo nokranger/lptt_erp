@@ -129,7 +129,7 @@ route.post('/get-month-prettycash', (req, res) => {
 })
 
 route.post('/post-prettycash', upload.single('file'), (req, res) => {
-  connection.getConnection((err) => {
+  connection.getConnection((err, con) => {
     if (err) throw err;
     console.log("Connected!");
     let data = JSON.parse(req.body.data)
@@ -142,8 +142,10 @@ route.post('/post-prettycash', upload.single('file'), (req, res) => {
       res.status(200).json({
         result: req.file.filename
       })
-    });
-  });
+    })
+    console.log('petty cash inserted')
+    con.release()
+  })
 }) 
 
 module.exports = route

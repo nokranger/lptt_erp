@@ -45,15 +45,27 @@ route.get('/get-last-trans', (req, res) => {
 })  
 route.post('/post-trans', (req, res) => {
   console.log('trans', ['', req.body.trans_date, req.body.employee_id, req.body.trans_from, req.body.trans_to, req.body.trans_vehicle, req.body.trans_values, req.body.approve_id, req.body.status])
-  connection.getConnection((err) => {
+  connection.getConnection((err, con) => {
     if (err) throw err;
     console.log('connected')
     var sql = "INSERT INTO transportation (trans_id, date, employee_id, trans_from, trans_to, trans_vehicle, trans_values, approve_id, trans_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    var sql2 = 'SELECT * FROM transportation'
     let values = ['', req.body.trans_date, req.body.employee_id, req.body.trans_from, req.body.trans_to, req.body.trans_vehicle, req.body.trans_values, req.body.approve_id, req.body.status]
     connection.query(sql, values, (err, result) => {
-      if (err) throw err;
-      console.log('post trans')
-      console.log(result)
+      connection.query(sql2, (err, result, fields) => {
+        if (err) {
+          res.status(404).json({
+            err: err
+          })
+        }
+        if (result.length > 0) {
+          res.status(200).json({
+            result: result
+          })
+        }
+      })
+      console.log('trans inserted')
+      con.release()
     })
   })
 })
