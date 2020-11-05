@@ -24,7 +24,7 @@ const upload = multer({
 route.get('/get-all-la_report', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err;
-      connection.query("SELECT * FROM leave_activity_report", (err, result, fields) => {
+      connection.query("SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id", (err, result, fields) => {
         if (err) throw err;
         // console.log(result);
         res.json({
@@ -39,7 +39,7 @@ route.post('/get-all-la_report-user', (req, res) => {
   console.log('emid', [req.body.id])
   connection.getConnection((err, con) => {
     if (err) throw err;
-    var sql = 'SELECT * FROM leave_activity_report WHERE employee_id = ?'
+    var sql = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id WHERE employee_id = ?'
     var value = [req.body.id]
     connection.query(sql, value, (err, result, fields) => {
       if (err) throw err;
@@ -81,12 +81,12 @@ route.post('/get-all-la_report-user', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err;
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
-      var sql2 = 'SELECT * FROM leave_activity_report'
+      var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
       var value = [req.body.status, req.body.approve_id, req.body.id]
       connection.query(sql, value, (err, result, fields) => {
         connection.query(sql2, (err, result, fields) => {
-          console.log('query2')
-          console.log(result)
+          // console.log('query2')
+          // console.log(result)
           if (err) {
             res.status(404).json({
               err: err
@@ -108,46 +108,65 @@ route.post('/get-all-la_report-user', (req, res) => {
           })
         }
         // console.log('bbbbbbb', typeof(result));
-        console.log('update leave done')
+        console.log('reject leave done')
         con.release()
       })
     })
   })
 
   route.patch('/approve-leave-report', (req, res) => {
-    console.log('llll', [req.body.status, req.body.id, req.body.approve_id])
+    console.log('app', [req.body.status, req.body.id, req.body.approve_id, req.body.category])
     connection.getConnection((err, con) => {
       if (err) throw err;
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
-      var sql2 = 'UPDATE lptt_employee SET leave_activity = leave_activity - ? WHERE employee_id = ?'
-      var sql3 = 'SELECT * FROM leave_activity_report'
+      var sql2 = 'UPDATE lptt_employee SET leave_activity = leave_activity - ? WHERE employee_id = ? AND leave_activity - ? = 0'
+      var sql2_2 = 'UPDATE lptt_employee SET leave_sick = leave_sick - ? WHERE employee_id = ? AND leave_activity - ? = 0'
+      var sql3 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
       var value = [req.body.status, req.body.approve_id, req.body.id]
-      var value2 = [req.body.amount, req.body.emp_id]
-      connection.query(sql, value, (err, result, fields) => {
+      var value2 = [req.body.amount, req.body.emp_id, req.body.amount]
+      if (req.body.category == 1) {
+        console.log('req1',req.body.category)
         connection.query(sql2, value2, (err, result, fields) => {
-          connection.query(sql3, (err, result, fields) => {
-            console.log('query2')
-            console.log(result)
-            if (err) {
-              res.status(404).json({
-                err: err
-              })
-            }
-            if (result.length > 0) {
-              res.status(200).json({
-                result: result
-              })
-            } else {
-              res.status(404).json({
-                message: 'NOT FOUND'
-              })
-            }
+          console.log('err', err)
+          console.log('resROWS', result.affectedRows)
+          connection.query(sql, value, (err, result) => {
+            connection.query(sql3, (err, result) => {
+              if (err) {
+                res.status(404).json({
+                  err: err
+                })
+              }
+              if (result.length > 0) {
+                res.status(200).json({
+                  result: result
+                })
+              }
+            })
+            console.log('approve leave done')
+            con.release()
           })
-          // console.log('bbbbbbb', typeof(result));
-          console.log('reject leave done')
-          con.release()
         })
-      })
+      } else if (req.body.category == 2) {
+        console.log('req2',req.body.category)
+        connection.query(sql2_2, value2, (err, result, fields) => {
+          connection.query(sql, value, (err, result, fields) => {
+            connection.query(sql3, (err, result, fields) => {
+              if (err) {
+                res.status(404).json({
+                  err: err
+                })
+              }
+              if (result.length > 0) {
+                res.status(200).json({
+                  result: result
+                })
+              }
+            })
+            console.log('approve leave done')
+            con.release()
+          })
+        })
+      }
     })
   })
 
@@ -156,7 +175,7 @@ route.post('/get-all-la_report-user', (req, res) => {
       if (err) throw err;
       console.log('connected')
       var sql = "INSERT INTO leave_activity_report (leave_activity_report_id, employee_id, start_time, end_time, reason_for_leave, leave_category, approve_id, approve_date, status, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-      var sql2 = 'SELECT * FROM leave_activity_report'
+      var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
       let values = ['', req.body.employee_id, req.body.start_time, req.body.end_time, req.body.reason_for_leave, req.body.leave_category, req.body.approve_id, req.body.approve_date, req.body.status, req.body.amount]
       connection.query(sql, values, (err, result) => {
         connection.query(sql2, (err, result, fields) => {
@@ -188,7 +207,7 @@ route.post('/checkleave', (req, res) => {
   console.log('test leave')
   connection.getConnection((err, con) => {
     if (err) throw err;
-    var sql = 'SELECT leave_activity FROM lptt_employee WHERE employee_id = ?'
+    var sql = 'SELECT leave_sick, leave_activity  FROM lptt_employee WHERE employee_id = ?'
     let values = [req.body.id]
     connection.query(sql, values, (err, result) => {
       if (err) {
