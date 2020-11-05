@@ -76,7 +76,7 @@ route.post('/get-all-la_report-user', (req, res) => {
       })
     })
   })
-  route.patch('/approve-leave-report', (req, res) => {
+  route.patch('/reject-leave-report', (req, res) => {
     console.log('llll', [req.body.status, req.body.id, req.body.approve_id])
     connection.getConnection((err, con) => {
       if (err) throw err;
@@ -114,40 +114,39 @@ route.post('/get-all-la_report-user', (req, res) => {
     })
   })
 
-  route.patch('/reject-leave-report', (req, res) => {
+  route.patch('/approve-leave-report', (req, res) => {
     console.log('llll', [req.body.status, req.body.id, req.body.approve_id])
     connection.getConnection((err, con) => {
       if (err) throw err;
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
-      var sql2 = 'SELECT * FROM leave_activity_report'
+      var sql2 = 'UPDATE lptt_employee SET leave_activity = leave_activity - ? WHERE employee_id = ?'
+      var sql3 = 'SELECT * FROM leave_activity_report'
       var value = [req.body.status, req.body.approve_id, req.body.id]
+      var value2 = [req.body.amount, req.body.emp_id]
       connection.query(sql, value, (err, result, fields) => {
-        connection.query(sql2, (err, result, fields) => {
-          console.log('query2')
-          console.log(result)
-          if (err) {
-            res.status(404).json({
-              err: err
-            })
-          }
-          if (result.length > 0) {
-            res.status(200).json({
-              result: result
-            })
-          } else {
-            res.status(404).json({
-              message: 'NOT FOUND'
-            })
-          }
-        })
-        if (err) {
-          res.status(404).json({
-            err: err
+        connection.query(sql2, value2, (err, result, fields) => {
+          connection.query(sql3, (err, result, fields) => {
+            console.log('query2')
+            console.log(result)
+            if (err) {
+              res.status(404).json({
+                err: err
+              })
+            }
+            if (result.length > 0) {
+              res.status(200).json({
+                result: result
+              })
+            } else {
+              res.status(404).json({
+                message: 'NOT FOUND'
+              })
+            }
           })
-        }
-        // console.log('bbbbbbb', typeof(result));
-        console.log('reject leave done')
-        con.release()
+          // console.log('bbbbbbb', typeof(result));
+          console.log('reject leave done')
+          con.release()
+        })
       })
     })
   })
