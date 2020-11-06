@@ -119,8 +119,8 @@ route.post('/get-all-la_report-user', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err;
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
-      var sql2 = 'UPDATE lptt_employee SET leave_activity = leave_activity - ? WHERE employee_id = ? AND leave_activity - ? = 0'
-      var sql2_2 = 'UPDATE lptt_employee SET leave_sick = leave_sick - ? WHERE employee_id = ? AND leave_activity - ? = 0'
+      var sql2 = 'UPDATE lptt_employee SET leave_activity = leave_activity - ? WHERE employee_id = ? AND leave_activity - ? >= 0'
+      var sql2_2 = 'UPDATE lptt_employee SET leave_sick = leave_sick - ? WHERE employee_id = ? AND leave_sick - ? >= 0'
       var sql3 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
       var value = [req.body.status, req.body.approve_id, req.body.id]
       var value2 = [req.body.amount, req.body.emp_id, req.body.amount]
@@ -128,43 +128,63 @@ route.post('/get-all-la_report-user', (req, res) => {
         console.log('req1',req.body.category)
         connection.query(sql2, value2, (err, result, fields) => {
           console.log('err', err)
-          console.log('resROWS', result.affectedRows)
-          connection.query(sql, value, (err, result) => {
-            connection.query(sql3, (err, result) => {
-              if (err) {
-                res.status(404).json({
-                  err: err
-                })
-              }
-              if (result.length > 0) {
-                res.status(200).json({
-                  result: result
-                })
-              }
+          console.log('resROWS: ', result.affectedRows)
+          if (result.affectedRows == 0) {
+            console.log('status0')
+            res.status(200).json({
+              result: 1
             })
-            console.log('approve leave done')
-            con.release()
-          })
+          } else if (result.affectedRows == 1) {
+            connection.query(sql, value, (err, result) => {
+              console.log('resROWS2', result.affectedRows)
+              console.log('status1')
+              connection.query(sql3, (err, result) => {
+                if (err) {
+                  res.status(404).json({
+                    err: err
+                  })
+                }
+                if (result.length > 0) {
+                  res.status(200).json({
+                    result: result
+                  })
+                }
+              })
+              console.log('approve leave done')
+              con.release()
+            })
+          }
         })
       } else if (req.body.category == 2) {
         console.log('req2',req.body.category)
-        connection.query(sql2_2, value2, (err, result, fields) => {
-          connection.query(sql, value, (err, result, fields) => {
-            connection.query(sql3, (err, result, fields) => {
-              if (err) {
-                res.status(404).json({
-                  err: err
-                })
-              }
-              if (result.length > 0) {
-                res.status(200).json({
-                  result: result
-                })
-              }
+        connection.query(sql2_2, value2, (err, result) => {
+          console.log('err', err)
+          console.log('resROWS: ', result.affectedRows)
+          if (result.affectedRows == 0) {
+            console.log('status0')
+            res.status(200).json({
+              result: 2
             })
-            console.log('approve leave done')
-            con.release()
-          })
+          } else if (result.affectedRows == 1) {
+            connection.query(sql, value, (err, result) => {
+              console.log('resROWS2', result.affectedRows)
+              console.log('status1')
+              connection.query(sql3, (err, result) => {
+                if (err) {
+                  res.status(404).json({
+                    err: err
+                  })
+                }
+                if (result.length > 0) {
+                  res.status(200).json({
+                    result: result
+                  })
+                }
+              })
+              console.log('approve leave done')
+              con.release()
+            })
+          }
         })
       }
     })
