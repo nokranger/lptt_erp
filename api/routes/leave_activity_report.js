@@ -39,7 +39,7 @@ route.post('/get-all-la_report-user', (req, res) => {
   console.log('emid', [req.body.id])
   connection.getConnection((err, con) => {
     if (err) throw err;
-    var sql = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id WHERE employee_id = ?'
+    var sql = 'SELECT * FROM leave_activity_report WHERE employee_id = ?'
     var value = [req.body.id]
     connection.query(sql, value, (err, result, fields) => {
       if (err) throw err;
