@@ -33,11 +33,11 @@ const requireJWTAuth = passport.authenticate('jwt', {session: false})
 // })
 route.post('/login', (req, res) => {
   connection.getConnection((err, con) => {
-    if (err) throw err;
+    if (err) throw err
     var sql = 'SELECT job_position.permission, lptt_employee.employee_id, lptt_employee.password FROM job_position INNER JOIN lptt_employee ON job_position.job_id = lptt_employee.job_position_id WHERE lptt_employee.employee_id = ? AND lptt_employee.password= ?'
     var value = [req.body.employee_id, req.body.password]
     connection.query(sql, value, (err, result, fields) => {
-      if (err) throw err;
+      if (err) throw err
       // console.log(result);
       if (result.length > 0) {
         console.log(result[0].permission)
@@ -67,37 +67,37 @@ route.post('/login', (req, res) => {
         })
       }
       con.release()
-    });
-  });
+    })
+  })
   console.log('done selected')
 })
 
 route.get('/get-last-emp', (req, res) => {
   connection.getConnection((err, con) => {
-    if (err) throw err;
+    if (err) throw err
     connection.query("SELECT * FROM lptt_employee ORDER BY employee_id LIMIT 1", (err, result, fields) => {
-      if (err) throw err;
+      if (err) throw err
       // console.log(result);
       res.json({
         result: result
       })
       con.release()
-    });
-  });
+    })
+  })
   console.log('done selected')
 })
 
 route.post('/post-emp', (req, res) => {
   connection.getConnection((err) => {
-    if (err) throw err;
-    console.log("Connected!");
+    if (err) throw err
+    console.log("Connected!")
     var sql = "INSERT INTO lptt_employee (employee_id, employee_name, employee_lastname, job_position_id, employee_email, employee_tel, password, start_date, leave_sick, leave_activity, leave_vacation, employee_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     let values = [req.body.employee_id, req.body.employee_name, req.body.employee_lastname, req.body.job_position_id, req.body.employee_email, req.body.employee_tel, req.body.password, req.body.start_date, req.body.leave_sick, req.body.leave_activity, req.body.leave_vacation, req.body.employee_pic]
     connection.query(sql, values, (err, result) => {
       if (err) throw err;
-      console.log("1 record inserted");
-    });
-  });
+      console.log("1 record inserted")
+    })
+  })
 }) 
 
 module.exports = route

@@ -23,40 +23,40 @@ const upload = multer({
 
 route.get('/get-all-la_report', (req, res) => {
     connection.getConnection((err, con) => {
-      if (err) throw err;
+      if (err) throw err
       connection.query("SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id", (err, result, fields) => {
-        if (err) throw err;
+        if (err) throw err
         // console.log(result);
         res.json({
           result: result,
         })
         con.release()
-      });
-    });
+      })
+    })
     console.log('done selected')
 })
 route.post('/get-all-la_report-user', (req, res) => {
   console.log('emid', [req.body.id])
   connection.getConnection((err, con) => {
-    if (err) throw err;
+    if (err) throw err
     var sql = 'SELECT * FROM leave_activity_report WHERE employee_id = ?'
     var value = [req.body.id]
     connection.query(sql, value, (err, result, fields) => {
-      if (err) throw err;
+      if (err) throw err
       // console.log(result);
       res.json({
         result: result,
       })
       con.release()
-    });
-  });
+    })
+  })
   console.log('done selected')
 })
 
  
   route.get('/get-last-record', (req, res) => {
     connection.getConnection((err, con) => {
-      if (err) throw err;
+      if (err) throw err
       connection.query('SELECT lptt_employee.employee_name, reason_for_leave, leave_category, status FROM leave_activity_report INNER JOIN lptt_employee on lptt_employee.employee_id = leave_activity_report.employee_id ORDER BY leave_activity_report.leave_activity_report_id DESC LIMIT 1', (err, result, fields) => {
         if (err) {
           res.status(404).json({
@@ -79,7 +79,7 @@ route.post('/get-all-la_report-user', (req, res) => {
   route.patch('/reject-leave-report', (req, res) => {
     console.log('llll', [req.body.status, req.body.id, req.body.approve_id])
     connection.getConnection((err, con) => {
-      if (err) throw err;
+      if (err) throw err
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
       var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
       var value = [req.body.status, req.body.approve_id, req.body.id]
@@ -117,7 +117,7 @@ route.post('/get-all-la_report-user', (req, res) => {
   route.patch('/approve-leave-report', (req, res) => {
     console.log('app', [req.body.status, req.body.id, req.body.approve_id, req.body.category])
     connection.getConnection((err, con) => {
-      if (err) throw err;
+      if (err) throw err
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
       var sql2 = 'UPDATE lptt_employee SET leave_activity = leave_activity - ? WHERE employee_id = ? AND leave_activity - ? >= 0'
       var sql2_2 = 'UPDATE lptt_employee SET leave_sick = leave_sick - ? WHERE employee_id = ? AND leave_sick - ? >= 0'
@@ -192,7 +192,7 @@ route.post('/get-all-la_report-user', (req, res) => {
 
   route.post('/post-la_report', (req, res) => {
     connection.getConnection((err, con) => {
-      if (err) throw err;
+      if (err) throw err
       console.log('connected')
       var sql = "INSERT INTO leave_activity_report (leave_activity_report_id, employee_id, start_time, end_time, reason_for_leave, leave_category, approve_id, approve_date, status, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
       var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
@@ -226,7 +226,7 @@ route.post('/checkleave', (req, res) => {
   console.log('id:', req.body.id)
   console.log('test leave')
   connection.getConnection((err, con) => {
-    if (err) throw err;
+    if (err) throw err
     var sql = 'SELECT leave_sick, leave_activity  FROM lptt_employee WHERE employee_id = ?'
     let values = [req.body.id]
     connection.query(sql, values, (err, result) => {

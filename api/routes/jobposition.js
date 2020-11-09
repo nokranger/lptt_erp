@@ -7,16 +7,16 @@ route.use(bodyParser.json())
 
 route.get('/get-all-job', (req, res) => {
     connection.getConnection((err, con) => {
-      if (err) throw err;
+      if (err) throw err
       connection.query("SELECT * FROM job_position", (err, result, fields) => {
-        if (err) throw err;
+        if (err) throw err
         // console.log(result);
         res.json({
           result: result
         })
         con.release()
-      });
-    });
+      })
+    })
     console.log('done selected')
   })
 

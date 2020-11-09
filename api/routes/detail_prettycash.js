@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     let ext = file.originalname.substring(
       file.originalname.lastIndexOf("."),
       file.originalname.length
-    );
+    )
     cb(null, 'LPTTPRETTYCASH' + "-" + Date.now() + '.png');
   }
 })
@@ -24,7 +24,7 @@ const upload = multer({
 //getallemp
 route.patch('/approve-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
-    if (err) throw err;
+    if (err) throw err
     var sql = 'UPDATE detail_prettycash SET status = ?, approve_id = ? WHERE id = ?'
     var sql2 = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ?'
     var value = [req.body.status, req.body.approve_id, req.body.id]
@@ -47,14 +47,14 @@ route.patch('/approve-prettycash', (req, res) => {
       // console.log('bbbbbbb', typeof(result));
       console.log('update cash done')
       con.release()
-    });
-  });
+    })
+  })
   // console.log('done selected')
 })
 
 route.patch('/reject-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
-    if (err) throw err;
+    if (err) throw err
     var sql = 'UPDATE detail_prettycash SET status = ?, approve_id = ? WHERE id = ?'
     var sql2 = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ?'
     var value = [req.body.status, req.body.approve_id, req.body.id]
@@ -77,8 +77,8 @@ route.patch('/reject-prettycash', (req, res) => {
       // console.log('bbbbbbb', typeof(result));
       console.log('update cash done')
       con.release()
-    });
-  });
+    })
+  })
   // console.log('done selected')
 })
 route.post('/pdf', (req, res) => {
@@ -107,13 +107,13 @@ route.post('/pdf', (req, res) => {
 
 route.post('/get-month-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
-    if (err) throw err;
+    if (err) throw err
     var sql = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ? '
     var value = [req.body.from, req.body.to]
     connection.query(sql, value, (err, result, fields) => {
-      if (err) throw err;
+      if (err) throw err
       if (result.length > 0) {
-        console.log(result);
+        // console.log(result)
         res.status(200).json({
           result: result
         })
@@ -123,22 +123,22 @@ route.post('/get-month-prettycash', (req, res) => {
         })
       }
       con.release()
-    });
-  });
+    })
+  })
   console.log('done selected')
 })
 
 route.post('/post-prettycash', upload.single('file'), (req, res) => {
   connection.getConnection((err, con) => {
-    if (err) throw err;
-    console.log("Connected!");
+    if (err) throw err
+    console.log("Connected!")
     let data = JSON.parse(req.body.data)
     // console.log(req.body.data)
     var sql = "INSERT INTO detail_prettycash (id, date, amount, service_charge, detail, picture, employee_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     let values = ['', data.date, data.amount, data.service_charge, data.detail,  req.file.filename, data.employee_id, data.status]
     connection.query(sql, values, (err, result) => {
-      if (err) throw err;
-      console.log("1 record inserted");
+      if (err) throw err
+      console.log("1 record inserted")
       res.status(200).json({
         result: req.file.filename
       })
