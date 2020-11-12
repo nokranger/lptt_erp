@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
       file.originalname.lastIndexOf("."),
       file.originalname.length
     );
-    cb(null, 'LPTTLEAVE' + "-" + Date.now() + ext);
+    cb(null, 'LPTTLEAVE' + "-" + Date.now() + ext)
   }
 })
 

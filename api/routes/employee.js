@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
       file.originalname.lastIndexOf("."),
       file.originalname.length
     )
-    cb(null, 'LPTTSIGNUP' + "-" + Date.now() + '.png');
+    cb(null, 'LPTTSIGNUP' + "-" + Date.now() + '.png')
   }
 })
 
