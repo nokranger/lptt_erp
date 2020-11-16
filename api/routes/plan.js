@@ -39,7 +39,7 @@ route.post('/createplan', (req, res) => {
     console.log('plan create')
 })
 
-route.get('/get-plan', (req, res) => {
+route.get('/get-emp-plan', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
     var sql = 'SELECT employee_id, employee_name FROM `lptt_employee`'
@@ -57,6 +57,30 @@ route.get('/get-plan', (req, res) => {
         })
       }
       console.log('plan get employee')
+      con.release()
+    })
+  })
+})
+
+route.get('/showcontent', (req, res) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'SELECT * FROM plan'
+    // var value = ['', req.body.id, req.body.title, req.body.detail, req.body.priority, req.body.permission, req.body.member, '', '']
+    connection.query(sql, (err, result, fields) => {
+      console.log(result)
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }
+      if (result.length > 0) {
+        console.log('test plan')
+        res.status(200).json({
+          result: result
+        })
+      }
+      console.log('plan get content')
       con.release()
     })
   })
