@@ -22,10 +22,12 @@ const upload = multer({
 })
 
 
-route.get('/get-all-la_report', (req, res) => {
+route.post('/createplan', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err
-      connection.query("SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id", (err, result, fields) => {
+      var sql = 'INSERT INTO plan (plan_id, employee_id, title, detail, priority, permission, member, reg_date, up_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      var value = ['', req.body.id, req.body.title, req.body.detail, req.body.priority, req.body.permission, req.body.member, '', '']
+      connection.query(sql, value,  (err, result, fields) => {
         if (err) throw err
         // console.log(result);
         res.json({
@@ -34,6 +36,29 @@ route.get('/get-all-la_report', (req, res) => {
         con.release()
       })
     })
-    console.log('plan select')
+    console.log('plan create')
+})
+
+route.get('/get-plan', (req, res) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'SELECT employee_id, employee_name FROM `lptt_employee`'
+    // var value = ['', req.body.id, req.body.title, req.body.detail, req.body.priority, req.body.permission, req.body.member, '', '']
+    connection.query(sql, (err, result, fields) => {
+      console.log(result)
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }
+      if (result.length > 0) {
+        res.status(200).json({
+          result: result
+        })
+      }
+      console.log('plan get employee')
+      con.release()
+    })
+  })
 })
 module.exports = route

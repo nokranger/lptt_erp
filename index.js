@@ -15,6 +15,7 @@ const transRoute = require('./api/routes/transportation')
 const DtransRoute = require('./api/routes/detail_transportation')
 const leaveAR = require('./api/routes/leave_activity_report')
 const prettyRoute = require('./api/routes/detail_prettycash')
+const planRoute = require('./api/routes/plan')
 
 app.use((req, res, next) =>{
     // const error = new Error("Not found")
@@ -67,6 +68,7 @@ app.use('/dtrans', DtransRoute)
 app.use('/leavear', leaveAR)
 app.use('/emp', loginRoute)
 app.use('/cash', prettyRoute)
+app.use('/plan', planRoute)
 
 
 let ports = process.env.PORT || 4000
