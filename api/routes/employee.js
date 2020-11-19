@@ -40,7 +40,7 @@ route.get('/get-all-emp', (req, res) => {
 route.get('/get-last-emp', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
-    connection.query("SELECT * FROM lptt_employee INNER JOIN job_position ORDER BY employee_id DESC LIMIT 1", (err, result, fields) => {
+    connection.query("SELECT * FROM lptt_employee INNER JOIN job_position WHERE job_position_id = job_position.job_id ORDER BY employee_id DESC LIMIT 1", (err, result, fields) => {
       if (err) throw err
       // console.log(result);
       res.json({

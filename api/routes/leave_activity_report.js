@@ -24,7 +24,7 @@ const upload = multer({
 route.get('/get-all-la_report', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err
-      connection.query("SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id", (err, result, fields) => {
+      connection.query("SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id DESC", (err, result, fields) => {
         if (err) throw err
         // console.log(result);
         res.json({
@@ -39,7 +39,7 @@ route.post('/get-all-la_report-user', (req, res) => {
   console.log('emid', [req.body.id])
   connection.getConnection((err, con) => {
     if (err) throw err
-    var sql = 'SELECT * FROM leave_activity_report WHERE employee_id = ?'
+    var sql = 'SELECT * FROM leave_activity_report WHERE employee_id = ? ORDER BY leave_activity_report_id DESC'
     var value = [req.body.id]
     connection.query(sql, value, (err, result, fields) => {
       if (err) throw err
@@ -81,7 +81,7 @@ route.post('/get-all-la_report-user', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
-      var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
+      var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id DESC'
       var value = [req.body.status, req.body.approve_id, req.body.id]
       connection.query(sql, value, (err, result, fields) => {
         connection.query(sql2, (err, result, fields) => {
@@ -121,7 +121,7 @@ route.post('/get-all-la_report-user', (req, res) => {
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
       var sql2 = 'UPDATE lptt_employee SET leave_activity = leave_activity - ? WHERE employee_id = ? AND leave_activity - ? >= 0'
       var sql2_2 = 'UPDATE lptt_employee SET leave_sick = leave_sick - ? WHERE employee_id = ? AND leave_sick - ? >= 0'
-      var sql3 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
+      var sql3 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id DESC'
       var value = [req.body.status, req.body.approve_id, req.body.id]
       var value2 = [req.body.amount, req.body.emp_id, req.body.amount]
       if (req.body.category == 1) {
@@ -195,7 +195,7 @@ route.post('/get-all-la_report-user', (req, res) => {
       if (err) throw err
       console.log('connected')
       var sql = "INSERT INTO leave_activity_report (leave_activity_report_id, employee_id, start_time, end_time, reason_for_leave, leave_category, approve_id, approve_date, status, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-      var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id'
+      var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id ORDER BY leave_activity_report_id DESC'
       let values = ['', req.body.employee_id, req.body.start_time, req.body.end_time, req.body.reason_for_leave, req.body.leave_category, req.body.approve_id, req.body.approve_date, req.body.status, req.body.amount]
       connection.query(sql, values, (err, result) => {
         connection.query(sql2, (err, result, fields) => {
