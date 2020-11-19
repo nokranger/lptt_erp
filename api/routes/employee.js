@@ -22,16 +22,26 @@ const upload = multer({
 })
 
 //getallemp
-route.get('/get-all-emp', (req, res) => {
+route.post('/get-all-emp', (req, res) => {
   connection.getConnection((err, con) => {
+    var sql = 'SELECT * FROM lptt_employee WHERE employee_id = ?'
+    var value = [req.body.id]
     if (err) throw err
-    connection.query("SELECT * FROM lptt_employee", (err, result, fields) => {
-      if (err) throw err
-      // console.log(result);
-      res.json({
-        result: result
-      })
-      con.release()
+    connection.query(sql, value, (err, result, fields) => {
+      console.log('sql queryplan')
+      console.log(result)
+      if (result.length > 0) {
+        console.log('status200')
+        res.status(200).json({
+          result: result
+        })
+      } else {
+        console.log('status404')
+        res.status(404).json({
+          err: err
+        })
+      } 
+    con.release()
     })
   })
   console.log('done selected')

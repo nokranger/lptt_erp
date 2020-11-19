@@ -6,20 +6,34 @@ const bodyParser = require('body-parser')
 route.use(bodyParser.json())
 
 route.get('/get-all-trans', (req, res) => {
-    connection.getConnection((err, con) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    connection.query("SELECT * FROM transportation WHERE trans_status = 0 ORDER BY trans_id DESC", (err, result, fields) => {
       if (err) throw err
-      connection.query("SELECT * FROM transportation ORDER BY trans_id DESC", (err, result, fields) => {
-        if (err) throw err
-        // console.log(result);
-        res.json({
-          result: result
-        })
-        con.release()
+      // console.log(result);
+      res.json({
+        result: result
       })
+      con.release()
     })
-    console.log('done selected')
   })
+  console.log('done selected')
+})
 
+route.get('/get-all-trans-history', (req, res) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    connection.query("SELECT * FROM transportation WHERE trans_status > 0 ORDER BY trans_id DESC", (err, result, fields) => {
+      if (err) throw err
+      // console.log(result);
+      res.json({
+        result: result
+      })
+      con.release()
+    })
+  })
+  console.log('done selected')
+})
   route.post('/get-all-trans-user', (req, res) => {
     console.log('user', [req.body.id])
     connection.getConnection((err, con) => {
@@ -93,7 +107,7 @@ route.patch('/approve-transportation', (req, res) => {
     // console.log(req.body.trans_status, req.body.approve_id, req.body.trans_id)
     if (err) throw err
     var sql = 'UPDATE transportation SET trans_status = ?, approve_id = ? WHERE trans_id = ?'
-    var sql2 = 'SELECT * FROM transportation ORDER BY trans_id DESC'
+    var sql2 = 'SELECT * FROM transportation WHERE trans_status = 0 ORDER BY trans_id DESC'
     var value = [req.body.trans_status, req.body.approve_id, req.body.trans_id]
     connection.query(sql, value, (err, result, fields) => {
       connection.query(sql2, (err, result, fields) => {
@@ -120,7 +134,7 @@ route.patch('/reject-transportation', (req, res) => {
     // console.log(req.body.trans_status, req.body.approve_id, req.body.trans_id)
     if (err) throw err
     var sql = 'UPDATE transportation SET trans_status = ?, approve_id = ? WHERE trans_id = ?'
-    var sql2 = 'SELECT * FROM transportation ORDER BY trans_id DESC'
+    var sql2 = 'SELECT * FROM transportation WHERE trans_status = 0 ORDER BY trans_id DESC'
     var value = [req.body.trans_status, req.body.approve_id, req.body.trans_id]
     connection.query(sql, value, (err, result, fields) => {
       connection.query(sql2, (err, result, fields) => {
