@@ -26,7 +26,7 @@ route.patch('/approve-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
     var sql = 'UPDATE detail_prettycash SET status = ?, approve_id = ? WHERE id = ?'
-    var sql2 = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ?'
+    var sql2 = 'SELECT * FROM detail_prettycash WHERE status = 0'
     var value = [req.body.status, req.body.approve_id, req.body.id]
     var value2 =  [req.body.from, req.body.to]
     connection.query(sql, value, (err, result, fields) => {
@@ -56,7 +56,7 @@ route.patch('/reject-prettycash', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
     var sql = 'UPDATE detail_prettycash SET status = ?, approve_id = ? WHERE id = ?'
-    var sql2 = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ?'
+    var sql2 = 'SELECT * FROM detail_prettycash WHERE status = 0'
     var value = [req.body.status, req.body.approve_id, req.body.id]
     var value2 =  [req.body.from, req.body.to]
     connection.query(sql, value, (err, result, fields) => {
@@ -106,6 +106,52 @@ route.post('/pdf', (req, res) => {
 })
 
 route.post('/get-month-prettycash', (req, res) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'SELECT * FROM detail_prettycash WHERE status = 0'
+    var value = [req.body.from, req.body.to]
+    connection.query(sql, (err, result, fields) => {
+      if (err) throw err
+      if (result.length > 0) {
+        // console.log(result)
+        res.status(200).json({
+          result: result
+        })
+      } else {
+        res.status(404).json({
+          message: 'NOT FOUND'
+        })
+      }
+      con.release()
+    })
+  })
+  console.log('done selected')
+})
+
+route.post('/get-month-prettycash-history', (req, res) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ?  and status > 0'
+    var value = [req.body.from, req.body.to]
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) throw err
+      if (result.length > 0) {
+        // console.log(result)
+        res.status(200).json({
+          result: result
+        })
+      } else {
+        res.status(404).json({
+          message: 'NOT FOUND'
+        })
+      }
+      con.release()
+    })
+  })
+  console.log('done selected')
+})
+
+route.post('/get-month-prettycash-user', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
     var sql = 'SELECT * FROM detail_prettycash WHERE date BETWEEN ? and ? '
