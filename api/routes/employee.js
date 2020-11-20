@@ -28,7 +28,7 @@ route.post('/get-all-emp', (req, res) => {
     var value = [req.body.id]
     if (err) throw err
     connection.query(sql, value, (err, result, fields) => {
-      console.log('sql emp')
+      console.log('sql queryplan')
       console.log(result)
       if (result.length > 0) {
         console.log('status200')
@@ -164,9 +164,9 @@ route.patch('/adminchangepassword', (req, res) => {
 route.patch('/changepassword', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err
-      var sql = 'UPDATE lptt_employee SET password = ? WHERE employee_id = ?'
+      var sql = 'UPDATE lptt_employee SET password = ? WHERE employee_id = ? AND employee_id != ?'
       var sql2 = 'SELECT lptt_employee.employee_id, lptt_employee.employee_name, lptt_employee.employee_lastname, lptt_employee.employee_email, lptt_employee.employee_tel, lptt_employee.start_date, lptt_employee.leave_sick, lptt_employee.leave_activity, lptt_employee.leave_vacation, lptt_employee.employee_pic, job_position.job_name FROM lptt_employee INNER JOIN job_position ON job_position.job_id = lptt_employee.job_position_id WHERE lptt_employee.employee_id = ?'
-      var values = [req.body.password, req.body.id]
+      var values = [req.body.password, req.body.id, 'ADMIN']
       var value2 = [req.body.id]
       console.log(req.body.password, req.body.id)
       connection.query(sql, values, (err, result, fields) => {
