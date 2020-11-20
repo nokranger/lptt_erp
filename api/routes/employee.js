@@ -28,7 +28,7 @@ route.post('/get-all-emp', (req, res) => {
     var value = [req.body.id]
     if (err) throw err
     connection.query(sql, value, (err, result, fields) => {
-      console.log('sql queryplan')
+      console.log('sql emp')
       console.log(result)
       if (result.length > 0) {
         console.log('status200')
