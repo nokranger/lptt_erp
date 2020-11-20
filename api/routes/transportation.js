@@ -175,6 +175,29 @@ route.get('/getstation', (req, res) => {
     })
   })
   console.log('done selected')
-})  
+})
+
+route.post('/get-month-trans-user', (req, res) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'SELECT * FROM transportation WHERE date BETWEEN ? and ?  and trans_status > 0 and employee_id = ? ORDER BY trans_id DESC'
+    var value = [req.body.from, req.body.to, req.body.id]
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) throw err
+      if (result.length > 0) {
+        // console.log(result)
+        res.status(200).json({
+          result: result
+        })
+      } else {
+        res.status(404).json({
+          message: 'NOT FOUND'
+        })
+      }
+      con.release()
+    })
+  })
+  console.log('done selected')
+})
 
 module.exports = route
