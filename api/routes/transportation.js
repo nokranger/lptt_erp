@@ -203,7 +203,7 @@ route.post('/get-month-trans-user', (req, res) => {
 route.post('/pdf', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
-    var sql = 'SELECT @_No := @_No +1 _No, date, lptt_employee.employee_name, transportation.trans_from, transportation.trans_to, trans_vehicle, trans_values, @_amount := @_amount + trans_values _amount FROM transportation, (SELECT @_No := 0) _No, (SELECT @_amount := 0) _amount INNER JOIN lptt_employee WHERE trans_status = 1 AND transportation.employee_id = lptt_employee.employee_id AND transportation.employee_id = ? AND date BETWEEN ? AND ?'
+    var sql = 'SELECT @_No := @_No +1 _No, date, lptt_employee.employee_name, lptt_employee.employee_lastname, transportation.trans_from, transportation.trans_to, vehicle.vehicle_name, trans_values, @_amount := @_amount + trans_values _amount FROM transportation, (SELECT @_No := 0) _No, (SELECT @_amount := 0) _amount INNER JOIN lptt_employee INNER JOIN vehicle WHERE trans_status = 1 AND transportation.employee_id = lptt_employee.employee_id AND transportation.trans_vehicle = vehicle.vehicle_id AND transportation.employee_id = ? AND date BETWEEN ? AND ?'
     var value = [req.body.id, req.body.from, req.body.to]
     console.log(req.body.from)
     console.log(req.body.to)
