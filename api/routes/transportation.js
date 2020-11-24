@@ -180,7 +180,7 @@ route.get('/getstation', (req, res) => {
 route.post('/get-month-trans-user', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
-    var sql = 'SELECT * FROM transportation WHERE date BETWEEN ? and ?  and trans_status > 0 and employee_id = ? ORDER BY trans_id DESC'
+    var sql = 'SELECT * FROM transportation WHERE date BETWEEN ? and ?  and trans_status = 1 and employee_id = ? ORDER BY trans_id DESC'
     var value = [req.body.from, req.body.to, req.body.id]
     connection.query(sql, value, (err, result, fields) => {
       if (err) throw err
@@ -198,6 +198,30 @@ route.post('/get-month-trans-user', (req, res) => {
     })
   })
   console.log('done selected')
+})
+
+route.post('/pdf', (req, res) => {
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'SELECT @_No := @_No +1 _No, date, lptt_employee.employee_name, transportation.trans_from, transportation.trans_to, trans_vehicle, trans_values, @_amount := @_amount + trans_values _amount FROM transportation, (SELECT @_No := 0) _No, (SELECT @_amount := 0) _amount INNER JOIN lptt_employee WHERE trans_status = 1 AND transportation.employee_id = lptt_employee.employee_id AND transportation.employee_id = ? AND date BETWEEN ? AND ?'
+    var value = [req.body.id, req.body.from, req.body.to]
+    console.log(req.body.from)
+    console.log(req.body.to)
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }else if (result.length > 0) {
+        console.log('test',result)
+        res.status(200).json({
+          result: result
+        })
+      }
+    })
+    console.log('select data for pdf')
+    con.release()
+  })
 })
 
 module.exports = route
