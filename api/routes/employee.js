@@ -2,7 +2,7 @@ const express = require('express')
 const route = express.Router()
 var multer  = require('multer')
 // const app = express()
-const connection = require('connection')
+const connection = require('../models/connection')
 const bodyParser = require('body-parser')
 route.use(bodyParser.json())
 
