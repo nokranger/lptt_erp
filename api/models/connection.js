@@ -3,7 +3,7 @@ const mysql = require('mysql')
 const connection = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: '1',
+  password: '',
   database: "lptt_erp",
   multipleStatements: true
 })

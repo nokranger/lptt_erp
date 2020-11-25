@@ -1,6 +1,6 @@
 const express = require('express')
 const route = express.Router()
-const connection = require('../models/connection')
+const connection = require('connection')
 const bodyParser = require('body-parser')
 var multer  = require('multer')
 const { response } = require('express')

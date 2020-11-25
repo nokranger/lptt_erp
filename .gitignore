@@ -1,4 +1,4 @@
 node_modules
 public
 nodemonindex.bat
-api/models/connection.js
+connection.js
