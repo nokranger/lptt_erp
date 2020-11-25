@@ -1,5 +1,12 @@
 {
     "env": {
         "JWT_KEY": "secret"
+    },
+    "watch": ["server"],
+    "ext": "ts",
+    "ignore": ["*.test.ts"],
+    "delay": "3",
+    "execMap": {
+      "ts": "ts-node"
     }
 }
