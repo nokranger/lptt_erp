@@ -7,7 +7,7 @@ route.use(bodyParser.json())
 
 
 const storage = multer.diskStorage({
-  destination: '../../../../../VueJS/LPTT/frontend_erp/src/img/uploads/prettycash/',
+  destination: '../../../../../VueJS/LPTT/frontend_erp/src/assets/img/uploads/prettycash/',
   filename: function(req, file, cb) {
     let ext = file.originalname.substring(
       file.originalname.lastIndexOf("."),
