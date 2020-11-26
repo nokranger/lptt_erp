@@ -58,6 +58,75 @@ route.post('/createplan', (req, res) => {
     console.log('plan create')
 })
 
+route.patch('/editcontents', (req, res) => {
+  console.log('edit', [req.body.id, req.body.title, req.body.up])
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'UPDATE plan SET title = ?, up_date = ? WHERE plan_id = ?'
+    var sql2 = 'SELECT lptt_employee.employee_name, lptt_employee.employee_lastname, comment_plan.* FROM `comment_plan` INNER JOIN lptt_employee ON comment_plan.employee_id = lptt_employee.employee_id ORDER BY plans_id DESC'
+    var value = [req.body.title, req.body.up, req.body.id]
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }
+      if (result.affectedRows == 0) {
+        res.status(404).json({
+          err: err
+        })
+      } else if (result.affectedRows == 1) {
+        connection.query(sql2, (err, result, fields) => {
+          if (result.length > 0) {
+            res.status(200).json({
+              result: result
+            })
+          } else {
+            res.status(404).json({
+              err: err
+            })
+          }
+        })
+      }
+      con.release()
+    })
+  })
+})
+route.patch('/editdetailcontents', (req, res) => {
+  console.log('edit', [req.body.id, req.body.detail, req.body.up])
+  connection.getConnection((err, con) => {
+    if (err) throw err
+    var sql = 'UPDATE plan SET detail = ?, up_date = ? WHERE plan_id = ?'
+    var sql2 = 'SELECT lptt_employee.employee_name, lptt_employee.employee_lastname, comment_plan.* FROM `comment_plan` INNER JOIN lptt_employee ON comment_plan.employee_id = lptt_employee.employee_id ORDER BY plans_id DESC'
+    var value = [req.body.detail, req.body.up, req.body.id]
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }
+      if (result.affectedRows == 0) {
+        res.status(404).json({
+          err: err
+        })
+      } else if (result.affectedRows == 1) {
+        connection.query(sql2, (err, result, fields) => {
+          if (result.length > 0) {
+            res.status(200).json({
+              result: result
+            })
+          } else {
+            res.status(404).json({
+              err: err
+            })
+          }
+        })
+      }
+      con.release()
+    })
+  })
+})
+
 route.post('/createcomment', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
@@ -96,40 +165,7 @@ route.post('/createcomment', (req, res) => {
   })
   console.log('plan create')
 })
-route.patch('/editcontent', (req, res) => {
-  console.log('edit', [req.body.id, req.body.comment, req.body.up])
-  connection.getConnection((err, con) => {
-    if (err) throw err
-    var sql = 'UPDATE comment_plan SET comments = ?, up_date = ? WHERE comments_id = ?'
-    var sql2 = 'SELECT lptt_employee.employee_name, lptt_employee.employee_lastname, comment_plan.* FROM `comment_plan` INNER JOIN lptt_employee ON comment_plan.employee_id = lptt_employee.employee_id ORDER BY plans_id DESC'
-    var value = [req.body.comment, req.body.up, req.body.id]
-    connection.query(sql, value, (err, result, fields) => {
-      if (err) {
-        res.status(404).json({
-          err: err
-        })
-      }
-      if (result.affectedRows == 0) {
-        res.status(404).json({
-          err: err
-        })
-      } else if (result.affectedRows == 1) {
-        connection.query(sql2, (err, result, fields) => {
-          if (result.length > 0) {
-            res.status(200).json({
-              result: result
-            })
-          } else {
-            res.status(404).json({
-              err: err
-            })
-          }
-        })
-      }
-      con.release()
-    })
-  })
-})
+
 route.patch('/editcomments', (req, res) => {
   console.log('edit', [req.body.id, req.body.comment, req.body.up])
   connection.getConnection((err, con) => {
