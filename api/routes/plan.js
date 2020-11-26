@@ -127,6 +127,45 @@ route.patch('/editdetailcontents', (req, res) => {
   })
 })
 
+route.post('/deletecontents', (req, res) => {
+  console.log('delete', req.body.id)
+  connection.getConnection((err, con) => {
+    console.log('delete2', req.params.id)
+    if (err) throw err
+    var sql = 'DELETE FROM plan WHERE plan_id = ?'
+    var sql2 = 'SELECT lptt_employee.employee_name, lptt_employee.employee_lastname, comment_plan.* FROM `comment_plan` INNER JOIN lptt_employee ON comment_plan.employee_id = lptt_employee.employee_id ORDER BY plans_id DESC'
+    var value = [req.body.id]
+    connection.query(sql, value, (err, result, fields) => {
+      if (err) {
+        res.status(404).json({
+          err: err
+        })
+      }
+      if (result.affectedRows == 0) {
+        console.log('delete fail')
+        res.status(404).json({
+          err: err
+        })
+      } else if (result.affectedRows == 1) {
+        console.log('delete done')
+        connection.query(sql2, (err, result, fields) => {
+          console.log('delete done2')
+          if (result.length > 0) {
+            res.status(200).json({
+              result: result
+            })
+          } else {
+            res.status(404).json({
+              err: err
+            })
+          }
+        })
+      }
+      con.release()
+    })
+  })
+})
+
 route.post('/createcomment', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
@@ -200,7 +239,7 @@ route.patch('/editcomments', (req, res) => {
     })
   })
 })
-route.post('/deletecomments/', (req, res) => {
+route.post('/deletecomments', (req, res) => {
   console.log('delete', req.body.id)
   connection.getConnection((err, con) => {
     console.log('delete2', req.params.id)
