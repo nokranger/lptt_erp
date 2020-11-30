@@ -78,5 +78,3 @@ const server = app.listen(ports, (req, res, next) => {
     const port = server.address().port
     console.log('Server run port : ' + port)
 })
-
-app.use(express.static('dist'))
