@@ -7,7 +7,7 @@ const { response } = require('express')
 route.use(bodyParser.json())
 
 const storage = multer.diskStorage({
-  destination: '../../../../../VueJS/LPTT/frontend_erp/src/assets/img/uploads/plan/',
+  destination: '../../../../ssr/lptt_erp/public/uploads/plan/',
   filename: function(req, file, cb) {
     let ext = file.originalname.substring(
       file.originalname.lastIndexOf("."),
@@ -281,7 +281,7 @@ route.post('/deletecomments', (req, res) => {
 route.get('/get-emp-plan', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
-    var sql = 'SELECT employee_id, employee_name, employee_lastname FROM `lptt_employee`'
+    var sql = 'SELECT employee_id, employee_name, employee_lastname, employee_pic FROM `lptt_employee`'
     // var value = ['', req.body.id, req.body.title, req.body.detail, req.body.priority, req.body.permission, req.body.member, '', '']
     connection.query(sql, (err, result, fields) => {
       // console.log(result)

@@ -3,11 +3,12 @@ const route = express.Router()
 var multer  = require('multer')
 // const app = express()
 const connection = require('../models/connection')
+// const connection = require('../../../../ssr/lptt_erp/public/uploads/signup/')
 const bodyParser = require('body-parser')
 route.use(bodyParser.json())
 
 const storage = multer.diskStorage({
-  destination: '../../../../../VueJS/LPTT/frontend_erp/src/assets/img/uploads/signup/',
+  destination: '../../../../ssr/lptt_erp/public/uploads/signup/',
   filename: function(req, file, cb) {
     let ext = file.originalname.substring(
       file.originalname.lastIndexOf("."),

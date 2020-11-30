@@ -7,7 +7,7 @@ const { response } = require('express')
 route.use(bodyParser.json())
 
 const storage = multer.diskStorage({
-  destination: './public/uploads/leave/',
+  destination: '../../../../ssr/lptt_erp/public/uploads/leave/',
   filename: function(req, file, cb) {
     let ext = file.originalname.substring(
       file.originalname.lastIndexOf("."),

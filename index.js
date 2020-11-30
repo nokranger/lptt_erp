@@ -69,7 +69,10 @@ app.use('/leavear', leaveAR)
 app.use('/emp', loginRoute)
 app.use('/cash', prettyRoute)
 app.use('/plan', planRoute)
-
+// url img
+app.use('/signup', express.static('public/uploads/signup'))
+app.use('/leave', express.static('public/uploads/leave'))
+app.use('/pettycash', express.static('public/uploads/pettycash'))
 
 let ports = process.env.PORT || 4000
 
