@@ -2,3 +2,4 @@ node_modules
 public
 nodemonindex.bat
 connection.js
+dist
