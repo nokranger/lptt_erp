@@ -96,9 +96,9 @@ route.post('/get-all-la_report-user', (req, res) => {
     console.log('llll', [req.body.status, req.body.id, req.body.approve_id])
     connection.getConnection((err, con) => {
       if (err) throw err
-      var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
+      var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ?, approve_date = ? WHERE leave_activity_report_id = ?'
       var sql2 = 'SELECT *, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id WHERE leave_activity_report.status = 0 ORDER BY leave_activity_report_id DESC'
-      var value = [req.body.status, req.body.approve_id, req.body.id]
+      var value = [req.body.status, req.body.approve_id, new Date(Date.now()).toString(), req.body.id]
       connection.query(sql, value, (err, result, fields) => {
         if (result.affectedRows == 0) {
           res.status(404).json({
@@ -135,11 +135,11 @@ route.post('/get-all-la_report-user', (req, res) => {
     console.log('app', [req.body.status, req.body.id, req.body.approve_id, req.body.category])
     connection.getConnection((err, con) => {
       if (err) throw err
-      var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
+      var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ?, approve_date = ? WHERE leave_activity_report_id = ?'
       var sql2 = 'UPDATE lptt_employee SET leave_activity = leave_activity - ? WHERE employee_id = ? AND leave_activity - ? >= 0'
       var sql2_2 = 'UPDATE lptt_employee SET leave_sick = leave_sick - ? WHERE employee_id = ? AND leave_sick - ? >= 0'
       var sql3 = 'SELECT *, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id WHERE leave_activity_report.status = 0 ORDER BY leave_activity_report_id DESC'
-      var value = [req.body.status, req.body.approve_id, req.body.id]
+      var value = [req.body.status, req.body.approve_id, new Date(Date.now()).toString(), req.body.id]
       var value2 = [req.body.amount, req.body.emp_id, req.body.amount]
       if (req.body.category == 1) {
         console.log('req1',req.body.category)
