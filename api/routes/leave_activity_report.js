@@ -97,27 +97,33 @@ route.post('/get-all-la_report-user', (req, res) => {
     connection.getConnection((err, con) => {
       if (err) throw err
       var sql = 'UPDATE leave_activity_report SET status = ?, approve_id = ? WHERE leave_activity_report_id = ?'
-      var sql2 = 'SELECT leave_activity_report.*, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id WHERE leave_activity_report.status = 0 ORDER BY leave_activity_report_id DESC'
+      var sql2 = 'SELECT *, leave_type.leave_name FROM leave_activity_report INNER JOIN leave_type on leave_activity_report.leave_category = leave_type.leave_id WHERE leave_activity_report.status = 0 ORDER BY leave_activity_report_id DESC'
       var value = [req.body.status, req.body.approve_id, req.body.id]
       connection.query(sql, value, (err, result, fields) => {
-        connection.query(sql2, (err, result, fields) => {
-          // console.log('query2')
-          // console.log(result)
-          if (err) {
-            res.status(404).json({
-              err: err
-            })
-          }
-          if (result.length > 0) {
-            res.status(200).json({
-              result: result
-            })
-          } else {
-            res.status(404).json({
-              message: 'NOT FOUND'
-            })
-          }
-        })
+        if (result.affectedRows == 0) {
+          res.status(404).json({
+            err: err
+          })
+        }else if (result.affectedRows == 1) {
+          connection.query(sql2, (err, result, fields) => {
+            // console.log('query2')
+            // console.log(result)
+            if (err) {
+              res.status(404).json({
+                err: err
+              })
+            }
+            if (result.length > 0) {
+              res.status(200).json({
+                result: result
+              })
+            } else if (result.length == 0){
+              res.status(404).json({
+                status: 1
+              })
+            }
+          })
+        }
         // console.log('bbbbbbb', typeof(result));
         console.log('reject leave done')
         con.release()
