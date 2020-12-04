@@ -180,7 +180,7 @@ route.get('/getstation', (req, res) => {
 route.post('/get-month-trans-user', (req, res) => {
   connection.getConnection((err, con) => {
     if (err) throw err
-    var sql = 'SELECT * FROM transportation WHERE date BETWEEN ? and ?  and trans_status = 1 and employee_id = ? ORDER BY trans_id DESC'
+    var sql = 'SELECT * FROM transportation WHERE date BETWEEN ? and ? and employee_id = ? ORDER BY trans_id DESC'
     var value = [req.body.from, req.body.to, req.body.id]
     connection.query(sql, value, (err, result, fields) => {
       if (err) throw err
